@@ -1,7 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { allure } from 'allure-playwright';
 
 export class LoginPage {
-  // Déclarer les éléments de la page
   readonly page: Page;
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
@@ -20,29 +20,50 @@ export class LoginPage {
    * Naviguer vers la page de login
    */
   async navigate(): Promise<void> {
-    await this.page.goto('/');
-    // Vérifier qu'on est sur la bonne page
-    await expect(this.page).toHaveTitle(/Swag Labs/);
+    await allure.step('Naviguer vers la page de login', async () => {
+      await this.page.goto('/');
+      await expect(this.page).toHaveTitle(/Swag Labs/);
+    });
   }
 
   /**
-   *  Login
-   * @param username - Nom d'utilisateur
-   * @param password - Mot de passe
+   * Login avec username et mot de passe
    */
   async login(username: string, password: string): Promise<void> {
-    await this.usernameInput.fill(username);
-    await this.passwordInput.fill(password);
-    await this.loginButton.click();
+    await allure.step(`Saisir le username: ${username}`, async () => {
+      await this.usernameInput.fill(username);
+    });
+
+    await allure.step(`Saisir le mot de passe`, async () => {
+      await this.passwordInput.fill(password);
+    });
+
+    await allure.step('Cliquer sur le bouton Login', async () => {
+      await this.loginButton.click();
+    });
+
+    // Attachment optionnel
+    await allure.attachment(
+      'Screenshot après tentative de login',
+      await this.page.screenshot(),
+      'image/png'
+    );
   }
 
   /**
-   * Vérifier les messages d'erreur si le login échoue
-   * @param expectedText - Texte du message d'erreur attendu
+   * Vérifier message d'erreur
    */
   async assertErrorMessage(expectedText: string): Promise<void> {
-    await expect(this.errorMessage).toBeVisible();
+    await allure.step(`Vérifier l’affichage du message d’erreur: "${expectedText}"`, async () => {
+      await expect(this.errorMessage).toBeVisible();
+      await expect(this.errorMessage).toContainText(expectedText);
+    });
 
-    await expect(this.errorMessage).toContainText(expectedText);
+    // Attachment texte
+    await allure.attachment(
+      'Message d’erreur affiché',
+      expectedText,
+      'text/plain'
+    );
   }
 }

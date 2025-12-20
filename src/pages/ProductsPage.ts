@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { allure } from 'allure-playwright';
 
 export class ProductsPage {
   readonly page: Page;
@@ -19,7 +20,9 @@ export class ProductsPage {
    * Vérifier que la page produits est chargée
    */
   async isLoaded(): Promise<void> {
-    await expect(this.title).toHaveText('Products');
+    await allure.step('Vérifier que la page produits est chargée', async () => {
+      await expect(this.title).toHaveText('Products');
+    });
   }
 
   /**
@@ -27,10 +30,10 @@ export class ProductsPage {
    * @param productName - Nom du produit
    */
   async addProductToCart(productName: string): Promise<void> {
-    const product = this.page.locator('.inventory_item', { 
-      hasText: productName 
+    await allure.step(`Ajouter le produit "${productName}" au panier`, async () => {
+      const product = this.page.locator('.inventory_item', { hasText: productName });
+      await product.locator('[data-test^="add-to-cart"]').click();
     });
-    await product.locator('[data-test^="add-to-cart"]').click();
   }
 
   /**
@@ -38,17 +41,19 @@ export class ProductsPage {
    * @param productName - Nom du produit
    */
   async removeProductFromCart(productName: string): Promise<void> {
-    const product = this.page.locator('.inventory_item', { 
-      hasText: productName 
+    await allure.step(`Retirer le produit "${productName}" du panier`, async () => {
+      const product = this.page.locator('.inventory_item', { hasText: productName });
+      await product.locator('[data-test^="remove"]').click();
     });
-    await product.locator('[data-test^="remove"]').click();
   }
 
   /**
    * Aller au panier
    */
   async goToCart(): Promise<void> {
-    await this.shoppingCart.click();
+    await allure.step('Aller au panier', async () => {
+      await this.shoppingCart.click();
+    });
   }
 
   /**
@@ -56,7 +61,9 @@ export class ProductsPage {
    * @param option - 'az' | 'za' | 'lohi' | 'hilo'
    */
   async sortProducts(option: 'az' | 'za' | 'lohi' | 'hilo'): Promise<void> {
-    await this.sortDropdown.selectOption(option);
+    await allure.step(`Trier les produits par "${option}"`, async () => {
+      await this.sortDropdown.selectOption(option);
+    });
   }
 
   /**
@@ -71,30 +78,28 @@ export class ProductsPage {
    * @param expectedCount - Nombre attendu dans le badge
    */
   async verifyCartBadge(expectedCount: number): Promise<void> {
-    const cartBadge = this.page.locator('.shopping_cart_badge');
-    if (expectedCount > 0) {
-      await expect(cartBadge).toHaveText(expectedCount.toString());
-    } else {
-      await expect(cartBadge).toBeHidden();
-    }
+    await allure.step(`Vérifier le badge du panier: ${expectedCount}`, async () => {
+      const cartBadge = this.page.locator('.shopping_cart_badge');
+      if (expectedCount > 0) {
+        await expect(cartBadge).toHaveText(expectedCount.toString());
+      } else {
+        await expect(cartBadge).toBeHidden();
+      }
+    });
   }
 
   /**
-   * Afficher  les noms de tous les produits
+   * Afficher les noms de tous les produits
    */
   async getAllProductNames(): Promise<string[]> {
     const names: string[] = [];
     const count = await this.getProductCount();
-    
-    for (let i = 0; i < count; i++) {
-      const name = await this.inventoryItems.nth(i)
-        .locator('.inventory_item_name')
-        .textContent();
 
-      if (name) 
-        {names.push(name);}
+    for (let i = 0; i < count; i++) {
+      const name = await this.inventoryItems.nth(i).locator('.inventory_item_name').textContent();
+      if (name) {names.push(name)};
     }
-    
+
     return names;
   }
 
@@ -102,38 +107,26 @@ export class ProductsPage {
    * Vérifier l'ordre des produits
    */
   async verifyProductsSorted(sortType: 'az' | 'za'): Promise<void> {
-    const productNames = await this.getAllProductNames();
-    
-    const sortedNames = [...productNames].sort();
-    
-    if (sortType === 'az') {
-      // Vérifier tri A-Z
-      for (let i = 0; i < productNames.length; i++) {
-        if (productNames[i] !== sortedNames[i]) {
-          throw new Error(`Produits non triés A-Z. 
-            Attendu: ${sortedNames[i]} 
-            Trouvé: ${productNames[i]}`);
-        }
-      }
-    } else {
-      // Vérifier tri Z-A
-      const reverseSorted = [...productNames].sort().reverse();
-      for (let i = 0; i < productNames.length; i++) {
-        if (productNames[i] !== reverseSorted[i]) {
-          throw new Error(`Produits non triés Z-A. 
-            Attendu: ${reverseSorted[i]} 
-            Trouvé: ${productNames[i]}`);
-        }
-      }
-    }
+    await allure.step(`Vérifier l'ordre des produits (${sortType === 'az' ? 'A-Z' : 'Z-A'})`, async () => {
+      const productNames = await this.getAllProductNames();
+
+      const expectedSorted = [...productNames].sort((a, b) => {
+        const comparison = a.localeCompare(b, 'en', { sensitivity: 'base', numeric: true, ignorePunctuation: true });
+        return sortType === 'az' ? comparison : -comparison;
+      });
+
+      expect(productNames, `Les produits doivent être triés ${sortType === 'az' ? 'A-Z' : 'Z-A'}`)
+        .toEqual(expectedSorted);
+    });
   }
 
-
-/** 
-* Logout 
-*/
-async logout(): Promise<void> {
-  await this.page.locator('#react-burger-menu-btn').click();
-  await this.page.locator('[data-test="logout-sidebar-link"]').click();
-}
+  /** 
+   * Logout
+   */
+  async logout(): Promise<void> {
+    await allure.step('Se déconnecter', async () => {
+      await this.page.locator('#react-burger-menu-btn').click();
+      await this.page.locator('[data-test="logout-sidebar-link"]').click();
+    });
+  }
 }

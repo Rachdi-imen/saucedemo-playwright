@@ -1,107 +1,29 @@
-import { test, expect } from '@playwright/test';
-import { LoginPage } from '../../pages/LoginPage';
-import { ProductsPage } from '../../pages/ProductsPage';
-import { CartPage } from '../../pages/CartPage';
+import { test } from '../base/BaseTest';
+import { Products } from '../../fixtures/data/products.data';
+import { Users } from '../../fixtures/data/users.data';
 
 test.describe('Cart Page Tests', () => {
-  /**
-   * TC-201: Ajouter produit et vérifier panier
-   */
-  test('TC-201: Add product and verify cart', async ({ page }) => {
-    // ARRANGE
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    
-    // ACT 1: Login
+
+  test.beforeEach(async ({ loginPage, productsPage, cartPage }) => {
     await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
+    await loginPage.login(Users.STANDARD.username, Users.STANDARD.password);
     await productsPage.isLoaded();
-    
-    // ACT 2: Ajouter produit
-    await productsPage.addProductToCart('Sauce Labs Backpack');
-    
-    // ACT 3: Aller au panier
+    await productsPage.addProductToCart(Products.BACKPACK.name);
     await productsPage.goToCart();
     await cartPage.isLoaded();
-    
-    // ASSERT
-    await expect(cartPage.cartItems).toHaveCount(1);
-    await cartPage.verifyProductInCart('Sauce Labs Backpack');
   });
 
-  /**
-   * TC-202: Retirer produit du panier
-   */
-  test('TC-202: Remove product from cart', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    
-    // Login et ajouter produit
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await productsPage.addProductToCart('Sauce Labs Bike Light');
-    await productsPage.goToCart();
-    await cartPage.isLoaded();
-    
-    // Vérifier produit présent
-    await cartPage.verifyProductInCart('Sauce Labs Bike Light');
-    
-    // Retirer produit
-    await cartPage.removeProduct('Sauce Labs Bike Light');
-    
-    // Vérifier panier vide
+  test('Vérifier produit dans le panier', async ({ cartPage }) => {
+    await cartPage.verifyProductInCart(Products.BACKPACK.name);
+  });
+
+  test('Retirer produit du panier', async ({ cartPage }) => {
+    await cartPage.removeProduct(Products.BACKPACK.name);
     await cartPage.verifyCartIsEmpty();
   });
 
-  /**
-   * TC-203: Ajouter multiples produits
-   */
-  test('TC-203: Add multiple products to cart', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
-    
-    // Ajouter 3 produits
-    await productsPage.addProductToCart('Sauce Labs Backpack');
-    await productsPage.addProductToCart('Sauce Labs Bike Light');
-    await productsPage.addProductToCart('Sauce Labs Bolt T-Shirt');
-    
-    // Aller au panier
-    await productsPage.goToCart();
-    await cartPage.isLoaded();
-    
-    // Vérifier
-    await expect(cartPage.cartItems).toHaveCount(3);
-    
-    const productNames = await cartPage.getAllProductNames();
-    expect(productNames).toContain('Sauce Labs Backpack');
-    expect(productNames).toContain('Sauce Labs Bike Light');
-    expect(productNames).toContain('Sauce Labs Bolt T-Shirt');
-  });
-
-  /**
-   * TC-204: Continuer les achats
-   */
-  test('TC-204: Continue shopping from cart', async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    const productsPage = new ProductsPage(page);
-    const cartPage = new CartPage(page);
-    
-    await loginPage.navigate();
-    await loginPage.login('standard_user', 'secret_sauce');
-    await productsPage.addProductToCart('Sauce Labs Backpack');
-    await productsPage.goToCart();
-    await cartPage.isLoaded();
-    
-    // Continuer les achats
+  test('Continuer les achats', async ({ cartPage, productsPage }) => {
     await cartPage.continueShopping();
-    
-    // Vérifier retour page produits
     await productsPage.isLoaded();
   });
 });

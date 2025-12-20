@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../base/BaseTest';
+
 import { LoginPage } from '../../pages/LoginPage';
 import { Users, ErrorMessages } from '../../fixtures/data/users.data';
 
@@ -9,7 +10,6 @@ test.describe('Tests de connexion SauceDemo', () => {
     loginPage = new LoginPage(page);
 
     await loginPage.navigate();
-    await page.screenshot({ path: 'screenshots/01-login-page.png', fullPage: true });
 
   });
 
@@ -25,7 +25,6 @@ test.describe('Tests de connexion SauceDemo', () => {
 
     const products = page.locator('.inventory_item');
     await expect(products.first()).toBeVisible();
-    await page.screenshot({ path: 'screenshots/03-dashboard.png', fullPage: true });
 
   });
 

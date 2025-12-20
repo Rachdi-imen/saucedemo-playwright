@@ -1,47 +1,62 @@
-name: CI - Playwright Tests
+name: CI & SonarCloud
 
 on:
   push:
     branches: [master]
 
 jobs:
-  test:
+  test-and-sonar:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
-    
+    timeout-minutes: 40
+
     steps:
-    - uses: actions/checkout@v4
-    
-    - uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-    
-    - name: Install dependencies
-      run: npm ci
-    
-    # CORRECTION : Ajouter --with-deps et chromium
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps chromium
-    
-    # CORRECTION : S'assurer que les browsers sont bien installés
-    - name: Verify Playwright installation
-      run: npx playwright --version
-    
-    - name: Run ESLint
-      run: npm run lint
-    
-    - name: Run Playwright tests
-      run: npm test
-      env:
-        CI: true
-    
-    - name: Upload test reports
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: playwright-reports
-        path: |
-          playwright-report/
-          reports/
-          test-results/
+      # 1️ Checkout du code
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
+
+      # 2️ Setup Node.js
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3️ Installer les dépendances
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️ Installer Playwright browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      # 5️ Vérifier installation Playwright
+      - name: Verify Playwright installation
+        run: npx playwright --version
+
+      # 6️ Linting
+      - name: Run ESLint
+        run: npm run lint
+
+      # 7️ Exécuter les tests Playwright
+      - name: Run Playwright tests
+        run: npm test
+        env:
+          CI: true
+
+      # 8️ Upload des rapports de tests
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-reports
+          path: |
+            playwright-report/
+            reports/
+            test-results/
+
+      # 9️ Analyse SonarCloud
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

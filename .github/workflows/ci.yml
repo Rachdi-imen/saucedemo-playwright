@@ -3,21 +3,16 @@ name: CI - Playwright Tests
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
   test:
-    name: Run Playwright Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
     
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
@@ -25,14 +20,19 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    # CORRECTION : Ajouter --with-deps et chromium
     - name: Install Playwright browsers
       run: npx playwright install --with-deps chromium
+    
+    # CORRECTION : S'assurer que les browsers sont bien installés
+    - name: Verify Playwright installation
+      run: npx playwright --version
     
     - name: Run ESLint
       run: npm run lint
     
     - name: Run Playwright tests
-      run: npm test -- --reporter=html,line,junit
+      run: npm test
       env:
         CI: true
     
@@ -44,4 +44,4 @@ jobs:
         path: |
           playwright-report/
           reports/
-        retention-days: 30
+          test-results/

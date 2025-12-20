@@ -8,46 +8,39 @@ on:
 
 jobs:
   test:
-    name: Run Tests on Chrome
+    name: Run Playwright Tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
-
+    
     steps:
-    # Étape 1: Checkout du code
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
-
-    # Étape 2: Setup Node.js
+    
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
-
-    # Étape 3: Installer les dépendances
+    
     - name: Install dependencies
       run: npm ci
-
-    # Étape 4: Installer Playwright Chrome
-    - name: Install Playwright
+    
+    - name: Install Playwright browsers
       run: npx playwright install --with-deps chromium
-
-    # Étape 5: Linter
+    
     - name: Run ESLint
       run: npm run lint
-
-    # Étape 6: Exécuter les tests
+    
     - name: Run Playwright tests
       run: npm test -- --reporter=html,line,junit
       env:
         CI: true
-
-    # Étape 7: Upload les rapports
+    
     - name: Upload test reports
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: test-reports
+        name: playwright-reports
         path: |
           playwright-report/
           reports/

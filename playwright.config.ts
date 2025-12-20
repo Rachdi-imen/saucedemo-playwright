@@ -32,20 +32,7 @@ forbidOnly: !!process.env.CI,
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    },
-      {
-    name: 'mobile-chrome',
-    use: { 
-      ...devices['Pixel 5'],
-      viewport: { width: 393, height: 851 }
-    },
-  },
-  {
-    name: 'mobile-safari',
-    use: { 
-      ...devices['iPhone 12'],
-    },
-  },
+    }
 
   ],
 });

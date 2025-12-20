@@ -8,42 +8,36 @@ jobs:
   test-and-sonar:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
     steps:
-      # 1️ Checkout du code
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  
 
-      # 2️ Setup Node.js
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
-      # 3️ Installer les dépendances
       - name: Install dependencies
         run: npm ci
 
-      # 4️ Installer Playwright browsers
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install --with-deps
 
-      # 5️ Vérifier installation Playwright
       - name: Verify Playwright installation
         run: npx playwright --version
 
-      # 6️ Linting
       - name: Run ESLint
         run: npm run lint
 
-      # 7️ Exécuter les tests Playwright
       - name: Run Playwright tests
         run: npm test
         env:
           CI: true
 
-      # 8️ Upload des rapports de tests
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -54,7 +48,6 @@ jobs:
             reports/
             test-results/
 
-      # 9️ Analyse SonarCloud
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

@@ -13,5 +13,4 @@ export const Users = {
 export const ErrorMessages = {
   LOCKED_USER: 'Sorry, this user has been locked out.',
   USERNAME_REQUIRED: 'Username is required',
-  PASSWORD_REQUIRED: 'Password is required'
 } as const;

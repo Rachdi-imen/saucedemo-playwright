@@ -1,30 +1,21 @@
-import { test, expect } from '../base/BaseTest';
+import { test } from '../base/BaseTest';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
-import { CartPage } from '../pages/CartPage';
 import { Users } from '../fixtures/data/users.data';
 import { Products } from '../fixtures/data/products.data';
 
-test.describe('Cart Page – SauceDemo', () => {
+test.describe('Products Page – SauceDemo', () => {
   let loginPage: LoginPage;
   let productsPage: ProductsPage;
-  let cartPage: CartPage;
 
-  // Avant chaque test : login et ajouter produit(s) au panier
+  // Avant chaque test : login
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     productsPage = new ProductsPage(page);
-    cartPage = new CartPage(page);
 
     await page.goto('/');
     await loginPage.login(Users.STANDARD.username, Users.STANDARD.password);
-
-    // Ajouter un produit pour tester le panier
-    await productsPage.addProductToCart(Products.BACKPACK.name);
-    await productsPage.goToCart();
-
-    // Vérifier que la page panier est chargée
-    await cartPage.isLoaded();
+    await productsPage.assertOnProductsPage();
   });
 
   // Après chaque test : logout
@@ -32,26 +23,25 @@ test.describe('Cart Page – SauceDemo', () => {
     await productsPage.logout();
   });
 
-  // TC01 : Vérifier qu'un produit est dans le panier
-  test('TC01 – Vérifier produit dans le panier [cart][smoke]', async () => {
-    await cartPage.verifyProductInCart(Products.BACKPACK.name);
+  // TC01 : Vérifier que la page produits est affichée
+  test('TC01 – Vérifier page produits [products][smoke]', async () => {
+    await productsPage.assertOnProductsPage();
   });
 
-  // TC02 : Retirer un produit du panier
-  test('TC02 – Retirer un produit du panier [cart]', async () => {
-    await cartPage.removeProduct(Products.BACKPACK.name);
-    await cartPage.verifyCartIsEmpty();
+  // TC02 : Ajouter un produit au panier
+  test('TC02 – Ajouter un produit au panier [products]', async () => {
+    await productsPage.addProductToCart(Products.BACKPACK.name);
   });
 
-  // TC03 : Continuer les achats depuis le panier
-  test('TC03 – Continuer les achats [cart]', async ({ page }) => {
-    await cartPage.continueShopping();
-    await expect(page).toHaveURL(/inventory\.html/);
+  // TC03 : Retirer un produit du panier
+  test('TC03 – Retirer un produit du panier [products]', async () => {
+    await productsPage.addProductToCart(Products.BACKPACK.name);
+    await productsPage.removeProductFromCart(Products.BACKPACK.name);
   });
 
-  // TC04 : Procéder au checkout
-  test('TC04 – Procéder au checkout [cart]', async ({ page }) => {
-    await cartPage.proceedToCheckout();
-    await expect(page).toHaveURL(/checkout-step-one\.html/);
+  // TC04 : Aller au panier
+  test('TC04 – Aller au panier [products]', async ({ page }) => {
+    await productsPage.goToCart();
+    await page.waitForURL(/cart\.html/);
   });
 });

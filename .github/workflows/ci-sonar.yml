@@ -3,41 +3,51 @@ name: CI & SonarCloud
 on:
   push:
     branches: [master]
+  pull_request:
+    branches: [master]
 
 jobs:
   test-and-sonar:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # 1️ Checkout
+      - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 0  
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # 2️ Installer Node.js
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
 
+      # 3️ Installer les dépendances
       - name: Install dependencies
         run: npm ci
 
+      # 4️ Installer les navigateurs Playwright
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
+      # 5️ Vérifier l'installation Playwright
       - name: Verify Playwright installation
         run: npx playwright --version
 
+      # 6️ Linter le code
       - name: Run ESLint
         run: npm run lint
 
+      # 7️ Exécuter tous les tests Playwright
       - name: Run Playwright tests
-        run: npm test
+        run: npx playwright test --reporter=list,html
         env:
           CI: true
 
+      # 8️ Upload des rapports Playwright/Allure
       - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -48,6 +58,7 @@ jobs:
             reports/
             test-results/
 
+      # 9️ Analyse SonarCloud
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v2
         env:

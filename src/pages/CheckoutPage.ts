@@ -1,9 +1,13 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { 
+  expectTitle, 
+  expectVisible, 
+  expectContainsText 
+} from '../utils/assertions';
 
 /**
  * Page Checkout
- * Gestion de la saisie des informations, validation du récapitulatif et confirmation de commande
  */
 export class CheckoutPage extends BasePage {
   private readonly title: Locator;
@@ -28,68 +32,57 @@ export class CheckoutPage extends BasePage {
   }
 
   /** Vérifier que la page Checkout est chargée */
-  async isPageLoaded(expectedTitle: string): Promise<void> {
+  async assertPageLoaded(expectedTitle: string): Promise<void> {
     await this.step(`Vérifier que la page "${expectedTitle}" est chargée`, async () => {
-      await expect(this.title).toHaveText(expectedTitle);
+      await expectTitle(this.page, expectedTitle);
     });
   }
 
   /** Remplir les informations de checkout */
-  async fillInformation(firstName: string, lastName: string, postalCode: string): Promise<this> {
-    await this.step(`Remplir informations: ${firstName} ${lastName} ${postalCode}`, async () => {
+  async fillInformation(firstName: string, lastName: string, postalCode: string): Promise<void> {
+    await this.step(`Remplir les informations: ${firstName} ${lastName} ${postalCode}`, async () => {
       await this.firstNameInput.fill(firstName);
       await this.lastNameInput.fill(lastName);
       await this.postalCodeInput.fill(postalCode);
     });
-     return this;
   }
 
   /** Continuer vers l'étape suivante */
-  async continue(): Promise<this> {
+  async continue(): Promise<void> {
     await this.step('Cliquer sur Continue', async () => {
       await this.continueButton.click();
     });
-    return this;
   }
 
   /** Finaliser la commande */
-  async finish(): Promise<this> {
+  async finish(): Promise<void> {
     await this.step('Cliquer sur Finish', async () => {
       await this.finishButton.click();
     });
-    return this;
   }
 
   /** Vérifier un message d'erreur */
   async assertErrorMessage(expectedText: string): Promise<void> {
     await this.step(`Vérifier message d'erreur: "${expectedText}"`, async () => {
-      await expect(this.errorMessage).toBeVisible();
-      await expect(this.errorMessage).toContainText(expectedText);
+      await expectVisible(this.page, '[data-test="error"]');
+      await expectContainsText(this.page, '[data-test="error"]', expectedText);
     });
   }
 
   /** Vérifier confirmation de commande */
   async verifyOrderConfirmation(): Promise<void> {
     await this.step('Vérifier confirmation de la commande', async () => {
-      await this.isPageLoaded('Checkout: Complete!');
-      await expect(this.page.locator('.complete-header')).toHaveText('Thank you for your order!');
+      await this.assertPageLoaded('Checkout: Complete!');
+      await expectContainsText(this.page, '.complete-header', 'Thank you for your order!');
     });
   }
 
   /** Vérifier le récapitulatif */
   async verifySummaryIsDisplayed(): Promise<void> {
     await this.step('Vérifier récapitulatif de commande', async () => {
-      await expect(this.summaryInfo).toBeVisible();
-      await expect(this.page.locator('text=Payment Information')).toBeVisible();
-      await expect(this.page.locator('text=Shipping Information')).toBeVisible();
+      await expectVisible(this.page, '.summary_info');
+      await expectVisible(this.page, 'text=Payment Information');
+      await expectVisible(this.page, 'text=Shipping Information');
     });
   }
-async getTotalAmount(): Promise<string> {
-      const totalText = await this.page.locator('.summary_total_label').textContent();
-      return totalText || '';
-    
-  }
-
 }
-
-

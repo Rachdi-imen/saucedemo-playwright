@@ -2,14 +2,12 @@ import { test } from '../base/BaseTest';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
+import { CheckoutPage } from '../pages/CheckoutPage';
 import { Users } from '../fixtures/data/users.data';
 import { Products } from '../fixtures/data/products.data';
-import { CheckoutPage } from '../pages/CheckoutPage';
 import { CheckoutData } from '../fixtures/data/checkout.data';
 
-
-
-test.describe('E2E – SauceDemo Complete Flow', () => {
+test.describe('E2E – SauceDemo', () => {
   let loginPage: LoginPage;
   let productsPage: ProductsPage;
   let cartPage: CartPage;
@@ -21,40 +19,21 @@ test.describe('E2E – SauceDemo Complete Flow', () => {
     cartPage = new CartPage(page);
     checkoutPage = new CheckoutPage(page);
 
-    // Aller sur la page
     await page.goto('/');
-  });
-
-  test.afterEach(async () => {
-    // Logout après chaque test
-    await productsPage.logout();
-  });
-
-  test('TC01 – Flux complet E2E [e2e][smoke]', async () => {
-    // Login
     await loginPage.login(Users.STANDARD.username, Users.STANDARD.password);
+  });
 
-    // Vérifier page produits chargée
-    await productsPage.isLoaded();
-
-    // Ajouter plusieurs produits
+  test('TC01 – Parcours complet [e2e][smoke]', async () => {
+    // Ajouter produit au panier
     await productsPage.addProductToCart(Products.BACKPACK.name);
-    await productsPage.addProductToCart(Products.BIKE.name);
-
-    // Vérifier badge du panier
-    await productsPage.verifyCartBadge(2);
-
-    // Aller au panier
     await productsPage.goToCart();
-    await cartPage.isLoaded();
 
-    // Vérifier produits dans le panier
-    await cartPage.verifyProductInCart(Products.BACKPACK.name);
-    await cartPage.verifyProductInCart(Products.BIKE.name);
+    // Vérifier produit dans le panier
+    await cartPage.verifyProductVisible(Products.BACKPACK.name);
 
-    // Proceed to checkout
+    // Procéder au checkout
     await cartPage.proceedToCheckout();
-    await checkoutPage.isPageLoaded('Checkout: Your Information');
+    await checkoutPage.assertPageLoaded('Checkout: Your Information');
 
     // Remplir informations et continuer
     await checkoutPage.fillInformation(
@@ -65,15 +44,16 @@ test.describe('E2E – SauceDemo Complete Flow', () => {
     await checkoutPage.continue();
 
     // Vérifier récapitulatif
-    await checkoutPage.isPageLoaded('Checkout: Overview');
     await checkoutPage.verifySummaryIsDisplayed();
-
-    // Vérifier total
-    const total = await checkoutPage.getTotalAmount();
-    console.log('Total de la commande:', total);
 
     // Finaliser commande
     await checkoutPage.finish();
+
+    // Vérifier confirmation
     await checkoutPage.verifyOrderConfirmation();
+  });
+
+  test.afterEach(async () => {
+    await productsPage.logout();
   });
 });

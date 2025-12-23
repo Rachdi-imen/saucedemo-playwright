@@ -1,9 +1,12 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { 
+  expectOnInventoryPage, 
+  expectTitle, 
+} from '../utils/assertions';
 
 /**
  * Page Produits
- * Gestion de la page produits, panier et tri
  */
 export class ProductsPage extends BasePage {
   private readonly title: Locator;
@@ -19,10 +22,11 @@ export class ProductsPage extends BasePage {
     this.sortDropdown = page.locator('[data-test="product-sort-container"]');
   }
 
-  /** Vérifier que la page produits est chargée */
-  async isLoaded(): Promise<void> {
-    await this.step('Vérifier que la page produits est chargée', async () => {
-      await expect(this.title).toHaveText('Products');
+  /** Vérifier que l'utilisateur est sur la page produits */
+  async assertOnProductsPage(): Promise<void> {
+    await this.step('Vérifier que l’utilisateur est sur la page produits', async () => {
+      await expectOnInventoryPage(this.page);
+      await expectTitle(this.page, 'Products');
     });
   }
 
@@ -49,31 +53,12 @@ export class ProductsPage extends BasePage {
     });
   }
 
-  /** Trier les produits par option : 'az' | 'za' | 'lohi' | 'hilo' */
+  /** Trier les produits */
   async sortProducts(option: 'az' | 'za' | 'lohi' | 'hilo'): Promise<void> {
     await this.step(`Trier les produits par "${option}"`, async () => {
       await this.sortDropdown.selectOption(option);
     });
   }
-
-  /** Obtenir le nombre de produits affichés */
-  async getProductCount(): Promise<number> {
-    return await this.inventoryItems.count();
-  }
-
-  /** Vérifier le badge du panier */
-  async verifyCartBadge(expectedCount: number): Promise<void> {
-    await this.step(`Vérifier le badge du panier: ${expectedCount}`, async () => {
-      const cartBadge = this.page.locator('.shopping_cart_badge');
-      if (expectedCount > 0) {
-        await expect(cartBadge).toHaveText(expectedCount.toString());
-      } else {
-        await expect(cartBadge).toBeHidden();
-      }
-    });
-  }
-
-
 
   /** Déconnexion */
   async logout(): Promise<void> {

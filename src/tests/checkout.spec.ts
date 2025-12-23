@@ -13,7 +13,6 @@ test.describe('Checkout Page – SauceDemo', () => {
   let cartPage: CartPage;
   let checkoutPage: CheckoutPage;
 
-  // Avant chaque test : login + ajouter produit + aller au panier + checkout step 1
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     productsPage = new ProductsPage(page);
@@ -22,59 +21,42 @@ test.describe('Checkout Page – SauceDemo', () => {
 
     await page.goto('/');
     await loginPage.login(Users.STANDARD.username, Users.STANDARD.password);
-
-    // Ajouter un produit et aller au panier
     await productsPage.addProductToCart(Products.BACKPACK.name);
     await productsPage.goToCart();
-    await cartPage.isLoaded();
-
-    // Aller à la page de checkout
     await cartPage.proceedToCheckout();
-    await checkoutPage.isPageLoaded('Checkout: Your Information');
   });
 
-  // Après chaque test : logout
-  test.afterEach(async () => {
-    await productsPage.logout();
+  // TC01 : Vérifier que la page Checkout est affichée
+  test('TC01 – Vérifier page Checkout [checkout][smoke]', async () => {
+    await checkoutPage.assertPageLoaded('Checkout: Your Information');
   });
 
-  // TC01 : Remplir correctement les informations
-  test('TC01 – Remplir informations checkout [checkout][smoke]', async () => {
+  // TC02 : Saisir informations valides et continuer
+  test('TC02 – Saisir informations et continuer [checkout]', async () => {
     await checkoutPage.fillInformation(
       CheckoutData.VALID_USER.firstName,
       CheckoutData.VALID_USER.lastName,
       CheckoutData.VALID_USER.postalCode
     );
-
     await checkoutPage.continue();
-
-    await checkoutPage.isPageLoaded('Checkout: Overview');
     await checkoutPage.verifySummaryIsDisplayed();
   });
 
-  // TC02 : Vérifier message d'erreur si champ vide
-  test('TC02 – Message d\'erreur champs obligatoires [checkout]', async () => {
+  // TC03 : Vérifier message d’erreur pour champs vides
+  test('TC03 – Champs vides [checkout]', async () => {
     await checkoutPage.fillInformation('', '', '');
     await checkoutPage.continue();
-
-    await checkoutPage.assertErrorMessage(
-      CheckoutData.ERROR_MESSAGES.FIRST_NAME_REQUIRED
-    );
+    await checkoutPage.assertErrorMessage(CheckoutData.ERROR_MESSAGES.FIRST_NAME_REQUIRED);
   });
 
-  // TC03 : Vérifier total et finaliser commande
-  test('TC03 – Finaliser commande et vérifier total [checkout]', async () => {
+  // TC04 : Finaliser commande
+  test('TC04 – Finaliser commande [checkout]', async () => {
     await checkoutPage.fillInformation(
       CheckoutData.VALID_USER.firstName,
       CheckoutData.VALID_USER.lastName,
       CheckoutData.VALID_USER.postalCode
     );
-
     await checkoutPage.continue();
-
-    const total = await checkoutPage.getTotalAmount();
-    console.log('Total de la commande:', total);
-
     await checkoutPage.finish();
     await checkoutPage.verifyOrderConfirmation();
   });

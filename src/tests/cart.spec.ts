@@ -44,8 +44,7 @@ test.describe('Cart Page – SauceDemo', () => {
     await page.waitForLoadState('domcontentloaded');
   });
 
-  test('TC04 – Procéder au checkout [cart]', async ({ page }) => {
+  test('TC04 – Procéder au checkout [cart]', async () => {
     await cartPage.proceedToCheckout();
-    await page.waitForLoadState('domcontentloaded');
   });
 });

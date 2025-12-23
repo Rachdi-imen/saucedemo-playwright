@@ -139,7 +139,11 @@ Clear and readable test cases
 
 ✅ Best Practices Applied
 
+<<<<<<< HEAD
 Page Object Model
+=======
+🔹Stratégie de test:
+>>>>>>> 1551c916979eae0ce1b6c8f7f1c4b223cc41148c
 
 Secure secrets management
 

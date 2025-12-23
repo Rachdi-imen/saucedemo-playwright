@@ -1,20 +1,19 @@
-SauceDemo – Playwright E2E Automation
-Présentation
+ SauceDemo – Playwright E2E Automation
+📌 Overview
 
-Ce projet est une suite de tests automatisés End-to-End (E2E) développée avec Playwright et TypeScript pour l’application SauceDemo.
+This project is an End-to-End (E2E) test automation framework built with Playwright and TypeScript for the SauceDemo application.
 
-Il a pour objectif de démontrer :
+It demonstrates:
 
-une automatisation UI propre, maintenable et scalable
+clean and maintainable UI automation
 
-l’utilisation du Page Object Model (POM)
+Page Object Model (POM)
 
-une intégration CI avec GitHub Actions
+CI automation with GitHub Actions
 
-l’application de bonnes pratiques professionnelles
-(sécurité, structure, lisibilité, qualité du code)
+code quality analysis with SonarQube
 
- Stack technique
+🛠 Tech Stack
 
 Playwright
 
@@ -28,104 +27,128 @@ GitHub Actions (CI)
 
 Playwright HTML Reporter
 
-SonarQube / SonarCloud (analyse qualité)
+SonarQube / SonarCloud
 
- Structure du projet
-       
-📦.github
- ┗ 📂workflows
- ┃ ┣ 📜build.yml  # Analyse qualité SonarQube
- ┃ ┗ 📜ci.yml     # CI : lint + tests Playwright
- 📦src
- ┣ 📂base
- ┃ ┗ 📜BaseTest.ts
- ┣ 📂fixtures
- ┃ ┗ 📂data
- ┃ ┃ ┣ 📜checkout.data.ts
- ┃ ┃ ┣ 📜products.data.ts
- ┃ ┃ ┗ 📜users.data.ts
- ┣ 📂pages
- ┃ ┣ 📜BasePage.ts
- ┃ ┣ 📜CartPage.ts
- ┃ ┣ 📜CheckoutPage.ts
- ┃ ┣ 📜LoginPage.ts
- ┃ ┗ 📜ProductsPage.ts
- ┣ 📂tests
- ┃ ┣ 📜cart.spec.ts
- ┃ ┣ 📜e2e.spec.ts
- ┃ ┣ 📜login.spec.ts
- ┃ ┗ 📜products.spec.ts
- ┗ 📂utils
- ┃ ┗ 📜assertions.ts
+📁 Project Structure
+.github/workflows/
+├── ci.yml            # CI pipeline (lint + tests)
+└── build.yml         # SonarQube quality analysis
 
+src/
+├── base/             # Test base configuration
+│   └── BaseTest.ts
+│
+├── fixtures/         # Test data
+│   └── data/
+│       ├── users.data.ts
+│       ├── products.data.ts
+│       └── checkout.data.ts
+│
+├── pages/            # Page Object Model
+│   ├── BasePage.ts
+│   ├── LoginPage.ts
+│   ├── ProductsPage.ts
+│   ├── CartPage.ts
+│   └── CheckoutPage.ts
+│
+├── tests/            # Test suites
+│   ├── login.spec.ts
+│   ├── products.spec.ts
+│   ├── cart.spec.ts
+│   └── e2e.spec.ts
+│
+└── utils/            # Reusable assertions & helpers
+    └── assertions.ts
 
- Installation
+🔐 Environment Variables
+
+Sensitive data is never hardcoded.
+
+Local setup
+
+Create a .env file at the project root:
+
+STANDARD_USER=standard_user
+STANDARD_PASSWORD=secret_sauce
+LOCKED_USER=locked_out_user
+LOCKED_PASSWORD=secret_sauce
+
+GitHub Actions
+
+Add the following Repository Secrets:
+
+STANDARD_USER
+
+STANDARD_PASSWORD
+
+LOCKED_USER
+
+LOCKED_PASSWORD
+
+SONAR_TOKEN
+
+🚀 Installation
 npm install
 npx playwright install
 
-▶ Exécution des tests
-Lancer tous les tests
+▶️ Run Tests
+
+Run all tests:
+
 npx playwright test
 
-Afficher le rapport HTML
+
+Open HTML report:
+
 npx playwright show-report
 
- Intégration Continue (CI)
-🔹 Workflow CI – Tests
+🤖 CI & Quality
+CI Pipeline
 
-Fichier : .github/workflows/ci.yml
+The CI workflow:
 
-Ce workflow :
+installs dependencies
 
-installe les dépendances
+runs ESLint
 
-exécute ESLint
+executes Playwright tests
 
-lance tous les tests Playwright
+uploads test reports
 
-génère et archive les rapports de tests
+SonarQube
 
-🔹 Workflow Qualité – SonarQube
+A separate workflow runs:
 
-Fichier : .github/workflows/build.yml
+static code analysis
 
-Ce workflow :
+code quality & duplication checks
 
-analyse la qualité du code
+Quality Gate validation
 
-détecte bugs, duplications et code smells
+This separation keeps the CI fast and the quality process independent.
 
-applique un Quality Gate
+🧪 Testing Strategy
 
-peut faire échouer le pipeline si la qualité n’est pas conforme
+End-to-End user scenarios
 
-=> Le workflow SonarQube est séparé du CI principal afin de :
+Centralized assertions (utils/assertions.ts)
 
-garder un CI rapide
+No code duplication
 
-isoler la responsabilité qualité
+Clear and readable test cases
 
-faciliter la maintenance
+✅ Best Practices Applied
 
-🔹Stratégie de test
+Page Object Model
 
-Tests E2E orientés parcours utilisateur
+Secure secrets management
 
-Assertions centralisées dans utils/assertions.ts
+Clean architecture
 
-Page Object Model sans duplication
+CI automation
 
-Tests lisibles, stables et maintenables
+Quality Gate enforcement
 
- Bonnes pratiques appliquées
+👩‍💻 Author
 
-Séparation claire des responsabilités
-
-Pas de secrets en dur dans le code
-
-CI automatisée
-
-Analyse qualité indépendante
-
-Code propre et évolutif
-
+Imen Rashdi

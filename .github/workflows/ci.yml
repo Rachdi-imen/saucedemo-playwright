@@ -59,13 +59,4 @@ jobs:
             reports/
             test-results/
 
-      # 9️ Analyse SonarCloud
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v7.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          STANDARD_USER: ${{ secrets.STANDARD_USER }}
-          STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD }}
-          LOCKED_USER: ${{ secrets.LOCKED_USER }}
-          LOCKED_PASSWORD: ${{ secrets.LOCKED_PASSWORD }}
+     

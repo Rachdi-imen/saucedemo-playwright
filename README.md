@@ -22,17 +22,20 @@ SonarQube / SonarCloud
 📂 Project Structure
 
 GitHub Actions
+
 .github/workflows/
 - ci.yml        → CI pipeline (lint + tests)
 - build.yml     → SonarQube analysis
 
 
 Test Base
+
 src/base/
 - BaseTest.ts   → Playwright base configuration
 
 
 Test Data (Fixtures)
+
 src/fixtures/data/
 - users.data.ts
 - products.data.ts
@@ -40,6 +43,7 @@ src/fixtures/data/
 
 
 Page Objects (POM)
+
 src/pages/
 - BasePage.ts
 - LoginPage.ts
@@ -49,6 +53,7 @@ src/pages/
 
 
 Test Suites
+
 src/tests/
 - login.spec.ts
 - products.spec.ts
@@ -57,6 +62,7 @@ src/tests/
 
 
 Utilities
+
 src/utils/
 - assertions.ts
 
@@ -65,6 +71,7 @@ src/utils/
 Sensitive data is stored securely.
 
 Local (.env)
+
 STANDARD_USER=standard_user
 STANDARD_PASSWORD=secret_sauce
 

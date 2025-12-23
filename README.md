@@ -1,17 +1,7 @@
- SauceDemo – Playwright E2E Automation
+SauceDemo – Playwright E2E Automation
 📌 Overview
 
-This project is an End-to-End (E2E) test automation framework built with Playwright and TypeScript for the SauceDemo application.
-
-It demonstrates:
-
-clean and maintainable UI automation
-
-Page Object Model (POM)
-
-CI automation with GitHub Actions
-
-code quality analysis with SonarQube
+End-to-End (E2E) automation framework built with Playwright + TypeScript for the SauceDemo application.
 
 🛠 Tech Stack
 
@@ -25,58 +15,54 @@ ESLint
 
 GitHub Actions (CI)
 
-Playwright HTML Reporter
-
 SonarQube / SonarCloud
 
-📁 Project Structure
+📂 Project Structure
+GitHub Actions
 .github/workflows/
-├── ci.yml            # CI pipeline (lint + tests)
-└── build.yml         # SonarQube quality analysis
+- ci.yml        → CI pipeline (lint + tests)
+- build.yml     → SonarQube analysis
 
-src/
-├── base/             # Test base configuration
-│   └── BaseTest.ts
-│
-├── fixtures/         # Test data
-│   └── data/
-│       ├── users.data.ts
-│       ├── products.data.ts
-│       └── checkout.data.ts
-│
-├── pages/            # Page Object Model
-│   ├── BasePage.ts
-│   ├── LoginPage.ts
-│   ├── ProductsPage.ts
-│   ├── CartPage.ts
-│   └── CheckoutPage.ts
-│
-├── tests/            # Test suites
-│   ├── login.spec.ts
-│   ├── products.spec.ts
-│   ├── cart.spec.ts
-│   └── e2e.spec.ts
-│
-└── utils/            # Reusable assertions & helpers
-    └── assertions.ts
+Test Base
+src/base/
+- BaseTest.ts   → Playwright base configuration
 
+Test Data (Fixtures)
+src/fixtures/data/
+- users.data.ts
+- products.data.ts
+- checkout.data.ts
+
+Page Objects (POM)
+src/pages/
+- BasePage.ts
+- LoginPage.ts
+- ProductsPage.ts
+- CartPage.ts
+- CheckoutPage.ts
+
+Test Suites
+src/tests/
+- login.spec.ts
+- products.spec.ts
+- cart.spec.ts
+- e2e.spec.ts
+
+Utilities
+src/utils/
+- assertions.ts
 
 🔐 Environment Variables
 
-Sensitive data is never hardcoded.
+Sensitive data is stored securely.
 
-Local setup
-
-Create a .env file at the project root:
-
+Local (.env)
 STANDARD_USER=standard_user
 STANDARD_PASSWORD=secret_sauce
 LOCKED_USER=locked_out_user
 LOCKED_PASSWORD=secret_sauce
 
-GitHub Actions
-
-Add the following Repository Secrets:
+GitHub Actions Secrets
 
 STANDARD_USER
 
@@ -88,65 +74,31 @@ LOCKED_PASSWORD
 
 SONAR_TOKEN
 
-🚀 Installation
-npm install
-npx playwright install
-
 ▶️ Run Tests
-
-Run all tests:
-
 npx playwright test
 
 
-Open HTML report:
+HTML report:
 
 npx playwright show-report
 
 🤖 CI & Quality
-CI Pipeline
 
-The CI workflow:
+CI workflow: lint + Playwright tests
 
-installs dependencies
+SonarQube workflow: code quality, duplication, Quality Gate
 
-runs ESLint
+👉 SonarQube is intentionally isolated from CI execution.
 
-executes Playwright tests
-
-uploads test reports
-
-SonarQube
-
-A separate workflow runs:
-
-static code analysis
-
-code quality & duplication checks
-
-Quality Gate validation
-
-This separation keeps the CI fast and the quality process independent.
-
-🧪 Testing Strategy
-
-End-to-End user scenarios
-
-Centralized assertions (utils/assertions.ts)
-
-No code duplication
-
-Clear and readable test cases
-
-✅ Best Practices Applied
+✅ Best Practices
 
 Page Object Model
 
-Secure secrets management
+Centralized assertions
 
-Clean architecture
+Secure secrets management
 
 CI automation
 
-Quality Gate enforcement
+Clean & maintainable code
 

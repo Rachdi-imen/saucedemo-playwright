@@ -107,7 +107,7 @@ isoler la responsabilité qualité
 
 faciliter la maintenance
 
-🔹Stratégie de test
+🔹Stratégie de test:
 
 Tests E2E orientés parcours utilisateur
 

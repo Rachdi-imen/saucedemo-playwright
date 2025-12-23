@@ -1,15 +1,18 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { allure } from 'allure-playwright';
+import { Locator, Page, expect } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class LoginPage {
-  readonly page: Page;
-  readonly usernameInput: Locator;
-  readonly passwordInput: Locator;
-  readonly loginButton: Locator;
-  readonly errorMessage: Locator;
+/**
+ * Page Login
+ * Gestion de la connexion
+ */
+export class LoginPage extends BasePage {
+  private readonly usernameInput: Locator;
+  private readonly passwordInput: Locator;
+  private readonly loginButton: Locator;
+  private readonly errorMessage: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.usernameInput = page.locator('[data-test="username"]');
     this.passwordInput = page.locator('[data-test="password"]');
     this.loginButton = page.locator('[data-test="login-button"]');
@@ -17,53 +20,28 @@ export class LoginPage {
   }
 
   /**
-   * Naviguer vers la page de login
-   */
-  async navigate(): Promise<void> {
-    await allure.step('Naviguer vers la page de login', async () => {
-      await this.page.goto('/');
-      await expect(this.page).toHaveTitle(/Swag Labs/);
-    });
-  }
-
-  /**
-   * Login avec username et mot de passe
+   * Effectue la connexion
+   * @param username Nom d'utilisateur
+   * @param password Mot de passe
    */
   async login(username: string, password: string): Promise<void> {
-    await allure.step(`Saisir le username: ${username}`, async () => {
+    await this.step(`Saisir username: ${username} et mot de passe`, async () => {
       await this.usernameInput.fill(username);
-    });
-
-    await allure.step(`Saisir le mot de passe`, async () => {
       await this.passwordInput.fill(password);
-    });
-
-    await allure.step('Cliquer sur le bouton Login', async () => {
       await this.loginButton.click();
     });
-
-    // Attachment optionnel
-    await allure.attachment(
-      'Screenshot après tentative de login',
-      await this.page.screenshot(),
-      'image/png'
-    );
+    // Screenshot après tentative de login
+    await this.attachScreenshot('Après login');
   }
 
   /**
-   * Vérifier message d'erreur
+   * Vérifie le message d'erreur affiché
+   * @param expected Texte attendu
    */
-  async assertErrorMessage(expectedText: string): Promise<void> {
-    await allure.step(`Vérifier l’affichage du message d’erreur: "${expectedText}"`, async () => {
+  async assertErrorMessage(expected: string): Promise<void> {
+    await this.step(`Vérifier message d'erreur: "${expected}"`, async () => {
       await expect(this.errorMessage).toBeVisible();
-      await expect(this.errorMessage).toContainText(expectedText);
+      await expect(this.errorMessage).toContainText(expected);
     });
-
-    // Attachment texte
-    await allure.attachment(
-      'Message d’erreur affiché',
-      expectedText,
-      'text/plain'
-    );
   }
 }

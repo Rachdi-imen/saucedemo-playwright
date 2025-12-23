@@ -60,6 +60,7 @@ src/
 └── utils/            # Reusable assertions & helpers
     └── assertions.ts
 
+
 🔐 Environment Variables
 
 Sensitive data is never hardcoded.
@@ -139,11 +140,7 @@ Clear and readable test cases
 
 ✅ Best Practices Applied
 
-<<<<<<< HEAD
 Page Object Model
-=======
-🔹Stratégie de test:
->>>>>>> 1551c916979eae0ce1b6c8f7f1c4b223cc41148c
 
 Secure secrets management
 
@@ -153,6 +150,3 @@ CI automation
 
 Quality Gate enforcement
 
-👩‍💻 Author
-
-Imen Rashdi

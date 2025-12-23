@@ -12,6 +12,10 @@ jobs:
     timeout-minutes: 40
     env:
       PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
+      STANDARD_USER: ${{ secrets.STANDARD_USER }}
+      STANDARD_PASSWORD: ${{ secrets.STANDARD_PASSWORD }}
+      LOCKED_USER: ${{ secrets.LOCKED_USER }}
+      LOCKED_PASSWORD: ${{ secrets.LOCKED_PASSWORD }}
 
     steps:
       # 1️ Checkout

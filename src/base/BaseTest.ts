@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { test as base,Page } from '@playwright/test';
 
 type Fixtures = { page: Page };

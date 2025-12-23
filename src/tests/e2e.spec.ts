@@ -1,4 +1,4 @@
-import { test, expect } from '../base/BaseTest';
+import { test } from '../base/BaseTest';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
@@ -25,7 +25,7 @@ test.describe('E2E – SauceDemo Complete Flow', () => {
     await page.goto('/');
   });
 
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async () => {
     // Logout après chaque test
     await productsPage.logout();
   });

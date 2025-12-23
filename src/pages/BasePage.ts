@@ -15,6 +15,7 @@ export abstract class BasePage {
   /**
    * Exécuter un step Allure
    */
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   protected async step(title: string, action: () => Promise<void>) {
     await allure.step(title, action);
   }

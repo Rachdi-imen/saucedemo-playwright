@@ -27,13 +27,13 @@ test.describe('Login – SauceDemo', () => {
   });
 
   // TC02 : Utilisateur bloqué
-  test('TC02 – Utilisateur bloqué [login]', async ({ page }) => {
+  test('TC02 – Utilisateur bloqué [login]', async () => {
     await loginPage.login(Users.LOCKED.username, Users.LOCKED.password);
     await loginPage.assertErrorMessage(ErrorMessages.LOCKED_USER);
   });
 
   // TC03 : Champs vides
-  test('TC03 – Champs vides [login]', async ({ page }) => {
+  test('TC03 – Champs vides [login]', async () => {
     await loginPage.login('', '');
     await loginPage.assertErrorMessage(ErrorMessages.USERNAME_REQUIRED);
   });

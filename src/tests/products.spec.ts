@@ -28,17 +28,17 @@ test.describe('Cart Page – SauceDemo', () => {
   });
 
   // Après chaque test : logout
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async () => {
     await productsPage.logout();
   });
 
   // TC01 : Vérifier qu'un produit est dans le panier
-  test('TC01 – Vérifier produit dans le panier [cart][smoke]', async ({ page }) => {
+  test('TC01 – Vérifier produit dans le panier [cart][smoke]', async () => {
     await cartPage.verifyProductInCart(Products.BACKPACK.name);
   });
 
   // TC02 : Retirer un produit du panier
-  test('TC02 – Retirer un produit du panier [cart]', async ({ page }) => {
+  test('TC02 – Retirer un produit du panier [cart]', async () => {
     await cartPage.removeProduct(Products.BACKPACK.name);
     await cartPage.verifyCartIsEmpty();
   });

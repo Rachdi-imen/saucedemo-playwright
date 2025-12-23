@@ -1,4 +1,4 @@
-import { test, expect } from '../base/BaseTest';
+import { test } from '../base/BaseTest';
 import { LoginPage } from '../pages/LoginPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { CartPage } from '../pages/CartPage';
@@ -34,7 +34,7 @@ test.describe('Checkout Page – SauceDemo', () => {
   });
 
   // Après chaque test : logout
-  test.afterEach(async ({ page }) => {
+  test.afterEach(async () => {
     await productsPage.logout();
   });
 

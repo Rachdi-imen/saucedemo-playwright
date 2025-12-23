@@ -79,7 +79,7 @@ export class CartPage extends BasePage {
       const name = await this.cartItems.nth(i)
         .locator('.inventory_item_name')
         .textContent();
-      if (name) names.push(name);
+      if (name){names.push(name);}
     }
 
     return names;

@@ -80,7 +80,8 @@ GitHub Actions Secrets
 
 SONAR_TOKEN
 
-▶️ Run Tests
+▶️ Run Tests:
+
 npx playwright test
 
 

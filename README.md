@@ -1,128 +1,81 @@
-#  SauceDemo – Playwright E2E Automation
+SauceDemo – Playwright E2E Automation
+Présentation
 
-##  Présentation
-Ce projet est une suite de **tests automatisés End-to-End (E2E)** développée avec **Playwright** et **TypeScript** pour l’application **SauceDemo**.
+Ce projet est une suite de tests automatisés End-to-End (E2E) développée avec Playwright et TypeScript pour l’application SauceDemo.
 
 Il a pour objectif de démontrer :
-- une automatisation UI propre et maintenable
-- l’utilisation du **Page Object Model**
-- une intégration **CI avec GitHub Actions**
-- de bonnes pratiques professionnelles (sécurité, structure, lisibilité)
 
----
+une automatisation UI propre, maintenable et scalable
 
-## Stack technique
-- **Playwright**
-- **TypeScript**
-- **Page Object Model (POM)**
-- **ESLint**
-- **GitHub Actions (CI)**
-- **Playwright HTML Reporter**
+l’utilisation du Page Object Model (POM)
 
----
+une intégration CI avec GitHub Actions
 
-## 📁 Structure du projet
+l’application de bonnes pratiques professionnelles
+(sécurité, structure, lisibilité, qualité du code)
 
-.github/
-└── workflows/
-└── ci.yml # Pipeline CI (sans Sonar)
+ Stack technique
 
-src/
-├── base/
-│ └── BaseTest.ts # Configuration Playwright
-│
-├── pages/
-│ ├── BasePage.ts # Page de base
-│ ├── LoginPage.ts
-│ ├── ProductsPage.ts
-│ ├── CartPage.ts
-│ └── CheckoutPage.ts
-│
-├── tests/
-│ ├── login.spec.ts
-│ ├── products.spec.ts
-│ ├── cart.spec.ts
-│ ├── checkout.spec.ts
-│ └── e2e.spec.ts # Parcours complet
-│
-├── utils/
-│ └── assertions.ts # Assertions réutilisables
-│
-├── fixtures/
-│ └── data/
-│ ├── users.data.ts
-│ └── products.data.ts
-│
-└── types/
+Playwright
 
+TypeScript
 
----
+Page Object Model (POM)
 
-##  Gestion des variables d’environnement
+ESLint
 
-Les credentials ne sont **jamais codés en dur**.
+GitHub Actions (CI)
 
-### Local
-Créer un fichier `.env` :
-```env
-STANDARD_USER=standard_user
-STANDARD_PASSWORD=secret_sauce
-LOCKED_USER=locked_out_user
-LOCKED_PASSWORD=secret_sauce
+Playwright HTML Reporter
 
+SonarQube / SonarCloud (analyse qualité)
 
-Le fichier .env doit être ignoré via .gitignore.
+ Structure du projet
+       
+📦.github
+ ┗ 📂workflows
+ ┃ ┣ 📜build.yml  # Analyse qualité SonarQube
+ ┃ ┗ 📜ci.yml     # CI : lint + tests Playwright
+ 📦src
+ ┣ 📂base
+ ┃ ┗ 📜BaseTest.ts
+ ┣ 📂fixtures
+ ┃ ┗ 📂data
+ ┃ ┃ ┣ 📜checkout.data.ts
+ ┃ ┃ ┣ 📜products.data.ts
+ ┃ ┃ ┗ 📜users.data.ts
+ ┣ 📂pages
+ ┃ ┣ 📜BasePage.ts
+ ┃ ┣ 📜CartPage.ts
+ ┃ ┣ 📜CheckoutPage.ts
+ ┃ ┣ 📜LoginPage.ts
+ ┃ ┗ 📜ProductsPage.ts
+ ┣ 📂tests
+ ┃ ┣ 📜cart.spec.ts
+ ┃ ┣ 📜e2e.spec.ts
+ ┃ ┣ 📜login.spec.ts
+ ┃ ┗ 📜products.spec.ts
+ ┗ 📂utils
+ ┃ ┗ 📜assertions.ts
 
-CI (GitHub Actions)
-
-Définir les secrets dans :
-
-Repository Settings → Secrets and variables → Actions
-
-
-Secrets requis :
-
-STANDARD_USER
-
-STANDARD_PASSWORD
-
-LOCKED_USER
-
-LOCKED_PASSWORD
 
  Installation
-1️ Cloner le projet
-git clone https://github.com/<username>/saucedemo-playwright.git
-cd saucedemo-playwright
-
-2️ Installer les dépendances
 npm install
-
-3 Installer Playwright
 npx playwright install
 
 ▶ Exécution des tests
 Lancer tous les tests
 npx playwright test
 
-Lancer un test spécifique
-npx playwright test src/tests/cart.spec.ts
-
-Mode UI
-npx playwright test --ui
-
- Rapports de tests
-
-Après l’exécution :
-
+Afficher le rapport HTML
 npx playwright show-report
 
+ Intégration Continue (CI)
+🔹 Workflow CI – Tests
 
-Un rapport HTML est généré automatiquement.
+Fichier : .github/workflows/ci.yml
 
- CI – GitHub Actions
-
-Le pipeline CI :
+Ce workflow :
 
 installe les dépendances
 
@@ -130,38 +83,49 @@ exécute ESLint
 
 lance tous les tests Playwright
 
-sauvegarde les rapports de tests
+génère et archive les rapports de tests
 
-Fichier :
+🔹 Workflow Qualité – SonarQube
 
-.github/workflows/ci.yml
+Fichier : .github/workflows/build.yml
 
- Stratégie de test
+Ce workflow :
+
+analyse la qualité du code
+
+détecte bugs, duplications et code smells
+
+applique un Quality Gate
+
+peut faire échouer le pipeline si la qualité n’est pas conforme
+
+=> Le workflow SonarQube est séparé du CI principal afin de :
+
+garder un CI rapide
+
+isoler la responsabilité qualité
+
+faciliter la maintenance
+
+🔹Stratégie de test
 
 Tests E2E orientés parcours utilisateur
 
-Assertions centralisées (utils/assertions.ts)
+Assertions centralisées dans utils/assertions.ts
 
-Tests indépendants
+Page Object Model sans duplication
 
-Pas de code duplication
-
-Lisibilité et maintenabilité prioritaires
+Tests lisibles, stables et maintenables
 
  Bonnes pratiques appliquées
 
-Page Object Model
+Séparation claire des responsabilités
 
-Séparation tests / logique métier
-
-Secrets sécurisés
+Pas de secrets en dur dans le code
 
 CI automatisée
 
-Code linté
+Analyse qualité indépendante
 
-Tests stables et reproductibles
+Code propre et évolutif
 
-👩 Auteur
-
-Imen Rashdi

@@ -25,6 +25,7 @@ export default defineConfig({
     navigationTimeout: 30000,
     viewport: { width: 1920, height: 1080 },
     ignoreHTTPSErrors: true,
+
   },
 
   projects: [

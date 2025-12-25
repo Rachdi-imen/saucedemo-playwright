@@ -13,9 +13,7 @@ export abstract class BasePage {
     this.page = page;
   }
 
-  /**
-   * Exécuter un step Allure
-   */
+ 
   protected async step(title: string, action: () => Promise<void>): Promise<void> {
     await allure.step(title, action);
   }

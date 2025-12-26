@@ -43,5 +43,6 @@ test.describe('Products Page – SauceDemo', () => {
   test('TC04 – Aller au panier [products]', async ({ page }) => {
     await productsPage.goToCart();
     await page.waitForURL(/cart\.html/);
+    
   });
 });

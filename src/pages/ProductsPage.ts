@@ -27,6 +27,7 @@ export class ProductsPage extends BasePage {
     await this.step('Vérifier que l’utilisateur est sur la page produits', async () => {
       await expectOnInventoryPage(this.page);
       await expectTitle(this.page, 'Products');
+
     });
   }
 

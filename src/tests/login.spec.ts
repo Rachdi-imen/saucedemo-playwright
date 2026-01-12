@@ -17,7 +17,7 @@ test.describe('Login – SauceDemo', () => {
   });
 
   // TC01 : Connexion valide
-  test('TC01 – Connexion réussie [smoke][login]', async ({ page }) => {
+  test('TC01 –  Connexion réussie [smoke][login]', async ({ page }) => {
     await loginPage.login(Users.STANDARD.username, Users.STANDARD.password);
     await expectOnInventoryPage(page);
   });
